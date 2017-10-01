@@ -33,6 +33,15 @@
           map: map,
           title: '¡Aqui nací...Andes venezolanos!'
         });
+
+        var infoWindow = new google.maps.InfoWindow({
+          content: 'Capital del Municipio Cárdenas, forma parte del área metropolitana de la capital del Táchira.'
+        });
+
+        marker.addListener('click', function() {
+          infoWindow.open(map, marker);
+        });
+
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBa5aX0iQdAwCTMTj4iv5QlGEb9ovnSaig&callback=initMap"
