@@ -22,27 +22,56 @@
     <div id="map"></div>
     <script>
       var map;
+      var markers = [];
+
       function initMap() {
+        var locations = [
+          {title:'Bogotá', location: {lat: 4.5933333, lng: -74.08111111111111}},
+          {title:'Medellin', location: {lat: 6.2447222, lng: -75.57472222222222}},
+          {title:'Cali', location: {lat: 3.44, lng: -76.51972222222223}}
+        ];
         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 7.8166667, lng: -72.21666666666667},
+          center: {lat: 4.8141667, lng: -75.69444444444444},
           zoom: 8
         });
-        var tariba = {lat: 7.8166667, lng: -72.21666666666667};
-        var marker = new google.maps.Marker({
-          position: tariba,
-          map: map,
-          title: '¡Aqui nací...Andes venezolanos!'
-        });
 
-        var infoWindow = new google.maps.InfoWindow({
-          content: 'Capital del Municipio Cárdenas, forma parte del área metropolitana de la capital del Táchira.'
-        });
+        var bounds = new google.maps.LatLngBounds();
 
-        marker.addListener('click', function() {
-          infoWindow.open(map, marker);
-        });
+        var largerInfowindow = new google.maps.InfoWindow();
+        for (var i=0;i < locations.lenght; i++) {
+          position = locations[i].location;
+          title = locations[i].title;
 
+          var marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            title: title,
+            animation: google.maps.Animation.DROP,
+            id: i
+          });
+
+          markers.push(marker);
+
+          bounds.extend(marker.position);
+
+          marker.addListener('click', function() {
+            populateInfoWindow(this, largerInfowindow);
+          });
+        }
+        // map.fitBounds(bounds);
       }
+
+      function populateInfoWindow(marker, infowindow) {
+        if (infowindow.marker != marker) {
+          infowindow.marker = marker;
+          infowindow.setContent('<div>' + marker.title + '</div>');
+          infowindow.open(map, marker);
+          infowindow.addListener('closeclick', function() {
+            infowindow.setMarker(null);
+          });
+        }
+      }
+      
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBa5aX0iQdAwCTMTj4iv5QlGEb9ovnSaig&callback=initMap"
     async defer></script>
